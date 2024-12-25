@@ -24,8 +24,16 @@ app.get("/", (req, res) => {
   res.send("API WORKING");
 });
 
-app.use("/api/auth", userRoutes);
+// app.use("/api/auth", userRoutes);
 
+app.use(
+  "/api/auth",
+  (req, res, next) => {
+    console.log("Received request at /api/auth");
+    next();
+  },
+  userRoutes
+);
 app.listen(PORT, (req, res) => {
   console.log("listennig on port 5000");
 });
