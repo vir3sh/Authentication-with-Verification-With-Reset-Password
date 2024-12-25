@@ -20,9 +20,9 @@ app.use(cors({ credentials: true }));
 
 // API END POINTS
 
-// app.get("/hello", (req, res) => {
-//   res.send("HELLO");
-// });
+app.get("/", (req, res) => {
+  res.send("API WORKING");
+});
 
 app.use("/api/auth", userRoutes);
 
