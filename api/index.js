@@ -7,16 +7,16 @@ import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 const PORT = 5000;
+const corsOptions = {
+  origin: "http://localhost:5173", // Replace with your frontend URL
+  credentials: true, // Allow credentials
+};
+app.use(cors(corsOptions));
 
 connectDB();
-// mongoose
-//   .connect(process.env.MONGODB_URI)
-//   .then(() => console.log("Connected to MongoDB"))
-//   .catch((err) => console.log("Error connecting to MongoDB:", err));
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true }));
 
 // API END POINTS
 
@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
   res.send("API WORKING");
 });
 
-// app.use("/api/auth", userRoutes);
+app.use("/api/auth", userRoutes);
 
 app.use(
   "/api/auth",
