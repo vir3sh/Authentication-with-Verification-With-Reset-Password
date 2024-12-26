@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AppContent } from "../context/AppContext";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
   const [state, setState] = useState("Sign Up");
@@ -10,7 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { backendUrl, setIsLoggedin } = useContext(AppContent);
+  const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContent);
 
   const handleFormSubmit = async (e) => {
     try {
@@ -31,23 +31,21 @@ const Login = () => {
         setEmail("");
         setPassword("");
         setIsLoggedin(true);
+        getUserData();
         navigate("/home");
         toast.success("User registered successfully");
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      console.log(
-        "Error during registration:",
-        error.response || error.message
-      );
-      toast.error("An error occurred during registration.");
+      toast.error(data.message);
     }
   };
 
   const handleLogin = async (e) => {
     try {
       e.preventDefault();
+      axios.defaults.withCredentials = true;
       const { data } = await axios.post(backendUrl + "/api/auth/login", {
         email,
         password,
@@ -56,6 +54,7 @@ const Login = () => {
         setEmail("");
         setPassword("");
         setIsLoggedin(true);
+        getUserData();
         navigate("/home");
         toast.success("Login successfully");
       } else {

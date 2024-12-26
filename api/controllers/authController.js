@@ -126,6 +126,7 @@ export const login = async (req, res) => {
 //LOGOUUT
 export const logout = async (req, res) => {
   try {
+    // localStorage.clearCookie;
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -290,6 +291,7 @@ export const sendResetOtp = async (req, res) => {
   }
 };
 
+//RESET PASSWORD
 export const resetPassword = async (req, res) => {
   const { email, otp, password } = req.body;
   if (!email || !otp || !password) {
