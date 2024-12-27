@@ -189,52 +189,67 @@ export const VerifyAccount = async (req, res) => {
   const { userId, otp } = req.body;
 
   if (!userId || !otp) {
-    return res.json({ success: false, message: "Fill all fields" });
+    return res.status(400).json({ success: false, message: "Fill all fields" });
   }
 
   try {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.json({ success: false, message: "user not found" });
-    }
-    if (user.verifyOtp == "" || user.verifyOtp !== otp) {
-      return res.json({ success: false, message: "Invalid OTP" });
-    }
-    if (user.verifyOtpExpiresAt < Date.now()) {
-      return res.json({ success: false, message: "OTP Expired" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
+    // Check if OTP is invalid or not set
+    if (!user.verifyOtp || user.verifyOtp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    // Check if OTP is expired
+    if (user.verifyOtpExpiresAt < Date.now()) {
+      return res.status(400).json({ success: false, message: "OTP Expired" });
+    }
+
+    // Proceed with account verification
     user.isAccountVerified = true;
-    user.verifyOtp = "";
-    user.verifyOtpExpiresAt = 0;
+    user.verifyOtp = ""; // Clear OTP after successful verification
+    user.verifyOtpExpiresAt = 0; // Reset OTP expiration time
 
     await user.save();
+
+    // Prepare verification success email
     const mailOption = {
       from: process.env.SENDER_EMAIL,
       to: user.email,
       subject: "Account Verified successfully",
-      text: `Your account is verified with mail Name : ${user.name} ,${user.email} and  ${otp}`,
+      text: `Your account is verified with mail Name: ${user.name}, ${user.email} and OTP: ${otp}`,
     };
 
     try {
       await transporter.sendMail(mailOption);
       console.log("OTP sent successfully");
     } catch (error) {
-      console.error("Failed to send email:", error);
-      return res.status(500).json({
+      // console.error("Failed to send email:", error);
+      return res.status(400).json({
         success: false,
-        message: "Failed to send registration email",
+        message: "Failed to send confirmation email",
         error: error.message,
       });
     }
 
+    // Success response
     return res.status(201).json({
       success: true,
       message: "Account Verified successfully",
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("Error in VerifyAccount:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
