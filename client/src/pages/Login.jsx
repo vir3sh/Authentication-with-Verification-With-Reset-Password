@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AppContent } from "../context/AppContext";
 import { data, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
   const [state, setState] = useState("Sign Up");
@@ -113,6 +114,9 @@ const Login = () => {
           <button className="p-3 bg-[#171737]  rounded-md text-white w-full hover:bg-slate-600">
             Submit
           </button>
+          <Link to="/forpassword" className="text-blue-500 hover:underline">
+            Forgot Password
+          </Link>
         </form>
       </div>
     </div>

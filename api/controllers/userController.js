@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { resetPassword } from "./authController.js";
 
 export const getUserData = async (req, res) => {
   try {
@@ -15,6 +16,7 @@ export const getUserData = async (req, res) => {
         name: user.name,
         email: user.email,
         isVerified: user.isAccountVerified,
+        resetPassword: user.resetOtp,
       },
     });
   } catch (error) {

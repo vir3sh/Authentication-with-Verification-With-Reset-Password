@@ -2,9 +2,11 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { AppContent } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 function ForgotPassword() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const { backendUrl, setIsLoggedin } = useContext(AppContent);
+  const { backendUrl } = useContext(AppContent);
 
   const handleFormSubmit = async (e) => {
     try {
@@ -15,6 +17,7 @@ function ForgotPassword() {
       });
       if (data.success) {
         setEmail("");
+        navigate("/resetpassword");
         toast.success("OTP sended");
       }
     } catch (error) {
