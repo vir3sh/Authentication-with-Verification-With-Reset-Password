@@ -8,7 +8,8 @@ import userRoutes from "./routes/userRoutes.js";
 const app = express();
 const PORT = 5000;
 const corsOptions = {
-  origin: "http://localhost:5173", // Replace with your frontend URL
+  origin:
+    "https://authentication-with-verification-with-reset-password-uor4.vercel.app", // Replace with your frontend URL
   credentials: true, // Allow credentials
 };
 app.use(cors(corsOptions));
